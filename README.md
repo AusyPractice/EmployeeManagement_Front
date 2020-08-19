@@ -26,7 +26,7 @@ There is a dedicated tutorial on how to set up Git.
 In a Git Bash, console we need to type the following command:
 
 ```
-git clone https://github.com/eliandoran/Ausy_EmployeeManagement.git
+git clone https://github.com/AusyPractice/EmployeeManagement_Front
 ```
 
 A new directory should be created called `Ausy_EmployeeManagement` containing the project.
