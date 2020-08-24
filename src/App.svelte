@@ -50,8 +50,9 @@
 						<td>&ndash;</td>
 						<td>{formatDate(employee.startDate)}</td>
 						<td>{formatDate(employee.endDate)}</td>
-						<td class="centered">{formatBoolean(employee.isManager)}</td>
-						<td class="centered">{formatBoolean(employee.isActive)}</td>
+						
+						<td class="centered boolean-value" class:yes="{employee.isManager}">{formatBoolean(employee.isManager)}</td>
+						<td class="centered boolean-value" class:yes="{employee.isActive}">{formatBoolean(employee.isActive)}</td>
 					</tr>
 				{/each}
 			</tbody>
@@ -59,8 +60,8 @@
 	</div>
 
 	<footer>
-		&copy; 2020 The Trainees at Ausy Technologies Romania.<br />
-		Icons provided by Icons8. Powered by Svelte.
+		&copy; 2020 The Trainees at <a href="https://www.ausy.com/en/the-group/locations/romania" target="_blank">Ausy Technologies Romania</a>.<br />
+		Icons provided by <a href="https://icons8.com/" target="_blank">Icons8</a>. Powered by <a href="https://svelte.dev/" target="_blank">Svelte</a>.
 	</footer>
 </div>
 
@@ -79,26 +80,62 @@
 	.employees-list table {
 		background-color: white;
 		width: 100%;
+		border-collapse: collapse;
+		border-radius: 5px;
+	}
+
+	.employees-list table th,
+	.employees-list table td {
+		padding: 0.5em;
+		border-bottom: 1px solid rgb(229, 229, 229);
 	}
 
 	.employees-list table th {
 		color: rgb(57, 66, 91);
 		text-transform: uppercase;
 		text-align: left;
+		border-bottom: 1px solid rgb(204, 204, 204);
 	}
 
-	.employees-list table th,
-	.employees-list table td {
-		padding: 0.5em;
+	/* Remove the border of the last row. */
+	.employees-list tr:last-child td {
+		border-bottom: 0;
+	}
+
+	/* Add a left padding only to the first column */
+	.employees-list th:first-child,
+	.employees-list td:first-child {
+		padding-left: 0.75em;
+	}
+
+	/* Add a right padding only to the last column */
+	.employees-list th:last-child,
+	.employees-list td:last-child {
+		padding-right: 0.75em;
 	}
 
 	.employees-list .centered {
 		text-align: center;
 	}
 
+	.boolean-value {
+		text-transform: uppercase;
+		font-size: 0.8em;
+		font-weight: 600;
+		color: red;
+	}
+
+	.boolean-value.yes {
+		color: green;
+	}
+
 	footer {
 		font-size: 0.8em;
 		color: rgb(205, 207, 214);
 		margin-top: 2em;
+	}
+
+	footer a {
+		color: rgb(205, 207, 214);
 	}
 </style>
