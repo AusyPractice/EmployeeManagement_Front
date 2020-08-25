@@ -1,4 +1,5 @@
 <script>
+	import Modal from "./Modal.svelte";
 	import repositories from "./repository";
 	const employees = repositories.employees.getAll();
 
@@ -23,7 +24,10 @@
 
 <div class="content-wrapper">
 	<header>
-		<h1>EmployeeManagement</h1>
+		<h1>
+			EmployeeManagement
+			<span class="subtitle">by the Ausy Trainees</span>
+		</h1>
 	</header>	
 
 	<div class="employees-list">
@@ -65,14 +69,34 @@
 	</footer>
 </div>
 
+<a href="#" class="action-button">
+	<span>
+		<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAATklEQVRIiWNgGAVUBkcZGBgO09KC/1BMNGCikUNGLRjJFhxlQCRFbBgG8KlBySfoFvyjgqNJyifYNI9mtFEL6GwBC4nqjzBQmM5HAQYAAEhLGN/HFZxZAAAAAElFTkSuQmCC"/>
+	</span>
+</a>
+
+<!--<Modal>
+	<input type="text" />
+</Modal>-->
 
 <style>
 	header {
 		color: white;
 	}
 
+	h1 {
+		display: table;
+	}
+
+	h1 .subtitle {
+		display: block;
+		font-size: 0.45em;
+		font-weight: 400;
+		opacity: 0.5;
+		text-align: right;
+	}
+
 	.content-wrapper {
-		overflow: hidden;
 		width: 920px;
 		margin: 0 auto;
 	}
@@ -82,6 +106,7 @@
 		width: 100%;
 		border-collapse: collapse;
 		border-radius: 5px;
+		box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
 	}
 
 	.employees-list table th,
@@ -137,5 +162,32 @@
 
 	footer a {
 		color: rgb(205, 207, 214);
+	}
+
+	.action-button {
+		display: block;
+		background-color: #c0242e;
+		width: 64px;
+		height: 64px;
+		border-radius: 50%;
+		position: fixed;
+		right: 1.5em;
+		bottom: 1.5em;
+		box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
+		color: white;
+		text-decoration: none;
+		text-align: center;		
+	}
+
+	.action-button span {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		font-size: 2em;
+		transform: translate(-50%, -50%);
+	}
+
+	.action-button span img {
+		filter: invert(1);
 	}
 </style>
