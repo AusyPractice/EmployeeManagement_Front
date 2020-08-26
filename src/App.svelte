@@ -2,6 +2,9 @@
 	import Modal from "./Modal.svelte";
 	import repositories from "./repository";
 	const employees = repositories.employees.getAll();
+	
+	let showModal = false;
+	let selectedEmployee;
 
 	function formatDate(date) {		
 		if (date === null) {
@@ -17,6 +20,16 @@
 		} else {
 			return "No";
 		}
+	}
+
+	function onEmployeeClicked(employee) {
+		console.log(employee);
+		showModal = true;
+		selectedEmployee = employee;
+	}
+
+	function onModalClosed() {
+		showModal = false;
 	}
 
 	console.log(employees);
@@ -47,7 +60,7 @@
 	
 			<tbody>
 				{#each employees as employee}
-					<tr>
+					<tr on:click="{() => onEmployeeClicked(employee)}">
 						<td>{employee.firstName}</td>
 						<td>{employee.lastName}</td>
 						<td>&ndash;</td>
@@ -75,9 +88,47 @@
 	</span>
 </a>
 
-<!--<Modal>
-	<input type="text" />
-</Modal>-->
+{#if showModal}
+<Modal on:close={onModalClosed}>
+	<form>
+		<div class="row">
+			<label>
+				First Name: 
+				<input type="text" required placeholder="First Name" value="{selectedEmployee.firstName}" />
+			</label>
+
+			<label>
+				Last Name:
+				<input type="text" required placeholder="Last Name" value="{selectedEmployee.lastName}" />
+			</label>
+		</div>
+
+		<div class="row">
+			<label>
+				Start Date:
+				<input type="date" required />
+			</label>
+
+			<label>
+				End Date:
+				<input type="date" />
+			</label>
+		</div>
+
+		<div class="row">
+			<label>
+				<input type="checkbox" checked />
+				Active
+			</label>
+
+			<label>
+				<input type="checkbox" />
+				Manager
+			</label>
+		</div>		
+	</form>
+</Modal>
+{/if}
 
 <style>
 	header {
@@ -154,6 +205,16 @@
 		color: green;
 	}
 
+	.employees-list tbody tr:hover {
+		cursor: pointer;
+		background-color: #c0242e;		
+	}
+
+	.employees-list tbody tr:hover,
+	.employees-list tbody tr:hover .boolean-value {
+		color: white;
+	}
+
 	footer {
 		font-size: 0.8em;
 		color: rgb(205, 207, 214);
@@ -176,7 +237,29 @@
 		box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
 		color: white;
 		text-decoration: none;
-		text-align: center;		
+		text-align: center;	
+		transition-property: background-color;
+		-webkit-transition-duration: 0.5s;
+		-moz-transition-duration: 0.5s;
+		-o-transition-duration: 0.5s;
+		-ms-transition-duration: 0.5s;
+		transition-duration: 0.5s;
+		transition-timing-function: linear;	
+	}
+
+	/*
+		Vendor prefixes
+		-webkit- 		Chrome, Safari, versiunile mai noi de Opera
+		-moz- 			Firefox
+		-o- 			versiunile mai vechi de Opera
+		-ms- 			IE, MS Edge
+	*/
+	.action-button:hover {
+		background-color: #E0444E;
+	}
+	.action-button:active {
+		transform: scale(1.05);
+		/* transform: translateY(3px); */
 	}
 
 	.action-button span {
@@ -189,5 +272,15 @@
 
 	.action-button span img {
 		filter: invert(1);
+	}
+
+	form .row {
+		overflow: auto;
+	}
+
+	form .row label {
+		display: inline-block;
+		width: 50%;
+		float: left;
 	}
 </style>
