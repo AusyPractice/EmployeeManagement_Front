@@ -1,6 +1,6 @@
 import random from "./random-utils";
 
-const STUDIES = [ "High School", "Bachelor's Degree", "Master's Degree", "Doctor's Degree", "Postdoctoral Studies" ];
+export const STUDIES = [ "High School", "Bachelor's Degree", "Master's Degree", "Doctor's Degree", "Postdoctoral Studies" ];
 
 const MALE_NAMES = [ "James", "John", "Robert", "Michael", "William", "David", "Richard", "Joseph" ];
 const FEMALE_NAMES = [ "Mary", "Patricia", "Jennifer", "Linda", "Elizabeth", "Barbara", "Susan" ];
