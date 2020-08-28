@@ -1,31 +1,19 @@
 <script>
 	import Modal from "./Modal.svelte";
-	import repositories from "./repository";
-	import { STUDIES } from "./utils/random-person";	
-	const employees = repositories.employees.getAll();
+	import ActionButton from "./components/ActionButton.svelte";
+	import EmployeeList from "./components/EmployeeList.svelte";
 	
+	import { STUDIES } from "./utils/random-person";	
+	
+	import repositories from "./repository";
+    const employees = repositories.employees.getAll();
+
 	let showModal = false;
 	let selectedEmployee;
 
-	function formatDate(date) {		
-		if (date === null) {
-			return "–";
-		}
-
-		return date.toLocaleDateString();
-	}
-
-	function formatBoolean(bool) {
-		if (bool) {
-			return "Yes";
-		} else {
-			return "No";
-		}
-	}
-
 	function formatDecimal(decimalNumber) {
 		return (Math.round(decimalNumber * 100) / 100).toFixed(2);
-	}
+    }
 
 	function formatDateIso(date) {
 		if (date == null) {
@@ -35,8 +23,8 @@
 		return date.toISOString().substr(0, 10);
 	}
 
-	function onEmployeeClicked(employee) {
-		console.log(employee);
+	function onEmployeeClicked(e) {
+		const employee = e.detail.employee;
 		showModal = true;
 		selectedEmployee = employee;
 	}
@@ -44,8 +32,6 @@
 	function onModalClosed() {
 		showModal = false;
 	}
-
-	console.log(employees);
 </script>
 
 <div class="content-wrapper">
@@ -56,38 +42,7 @@
 		</h1>
 	</header>	
 
-	<div class="employees-list">
-		<table>
-			<thead>
-				<tr>
-					<th>First Name</th>
-					<th>Last Name</th>
-					<th>Department</th>
-					<th>Position</th>
-					<th>Start Date</th>
-					<th>End Date</th>
-					<th class="centered">Manager</th>
-					<th class="centered">Active</th>
-				</tr>
-			</thead>
-	
-			<tbody>
-				{#each employees as employee}
-					<tr on:click="{() => onEmployeeClicked(employee)}">
-						<td>{employee.firstName}</td>
-						<td>{employee.lastName}</td>
-						<td>&ndash;</td>
-						<td>&ndash;</td>
-						<td>{formatDate(employee.startDate)}</td>
-						<td>{formatDate(employee.endDate)}</td>
-						
-						<td class="centered boolean-value" class:yes="{employee.isManager}">{formatBoolean(employee.isManager)}</td>
-						<td class="centered boolean-value" class:yes="{employee.isActive}">{formatBoolean(employee.isActive)}</td>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
-	</div>
+	<EmployeeList employees="{employees}" on:click="{onEmployeeClicked}" />
 
 	<footer>
 		&copy; 2020 The Trainees at <a href="https://www.ausy.com/en/the-group/locations/romania" target="_blank">Ausy Technologies Romania</a>.<br />
@@ -95,11 +50,7 @@
 	</footer>
 </div>
 
-<a href="#" class="action-button">
-	<span>
-		<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAATklEQVRIiWNgGAVUBkcZGBgO09KC/1BMNGCikUNGLRjJFhxlQCRFbBgG8KlBySfoFvyjgqNJyifYNI9mtFEL6GwBC4nqjzBQmM5HAQYAAEhLGN/HFZxZAAAAAElFTkSuQmCC"/>
-	</span>
-</a>
+<ActionButton />
 
 {#if showModal}
 <Modal on:close={onModalClosed}>
@@ -247,69 +198,6 @@
 		margin: 0 auto;
 	}
 
-	.employees-list table {
-		background-color: white;
-		width: 100%;
-		border-collapse: collapse;
-		border-radius: 5px;
-		box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
-	}
-
-	.employees-list table th,
-	.employees-list table td {
-		padding: 0.5em;
-		border-bottom: 1px solid rgb(229, 229, 229);
-	}
-
-	.employees-list table th {
-		color: rgb(57, 66, 91);
-		text-transform: uppercase;
-		text-align: left;
-		border-bottom: 1px solid rgb(204, 204, 204);
-	}
-
-	/* Remove the border of the last row. */
-	.employees-list tr:last-child td {
-		border-bottom: 0;
-	}
-
-	/* Add a left padding only to the first column */
-	.employees-list th:first-child,
-	.employees-list td:first-child {
-		padding-left: 0.75em;
-	}
-
-	/* Add a right padding only to the last column */
-	.employees-list th:last-child,
-	.employees-list td:last-child {
-		padding-right: 0.75em;
-	}
-
-	.employees-list .centered {
-		text-align: center;
-	}
-
-	.boolean-value {
-		text-transform: uppercase;
-		font-size: 0.8em;
-		font-weight: 600;
-		color: red;
-	}
-
-	.boolean-value.yes {
-		color: green;
-	}
-
-	.employees-list tbody tr:hover {
-		cursor: pointer;
-		background-color: #c0242e;		
-	}
-
-	.employees-list tbody tr:hover,
-	.employees-list tbody tr:hover .boolean-value {
-		color: white;
-	}
-
 	footer {
 		font-size: 0.8em;
 		color: rgb(205, 207, 214);
@@ -318,55 +206,6 @@
 
 	footer a {
 		color: rgb(205, 207, 214);
-	}
-
-	.action-button {
-		display: block;
-		background-color: #c0242e;
-		width: 64px;
-		height: 64px;
-		border-radius: 50%;
-		position: fixed;
-		right: 1.5em;
-		bottom: 1.5em;
-		box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
-		color: white;
-		text-decoration: none;
-		text-align: center;	
-		transition-property: background-color;
-		-webkit-transition-duration: 0.5s;
-		-moz-transition-duration: 0.5s;
-		-o-transition-duration: 0.5s;
-		-ms-transition-duration: 0.5s;
-		transition-duration: 0.5s;
-		transition-timing-function: linear;	
-	}
-
-	/*
-		Vendor prefixes
-		-webkit- 		Chrome, Safari, versiunile mai noi de Opera
-		-moz- 			Firefox
-		-o- 			versiunile mai vechi de Opera
-		-ms- 			IE, MS Edge
-	*/
-	.action-button:hover {
-		background-color: #E0444E;
-	}
-	.action-button:active {
-		transform: scale(1.05);
-		/* transform: translateY(3px); */
-	}
-
-	.action-button span {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		font-size: 2em;
-		transform: translate(-50%, -50%);
-	}
-
-	.action-button span img {
-		filter: invert(1);
 	}
 
 	form .row {
