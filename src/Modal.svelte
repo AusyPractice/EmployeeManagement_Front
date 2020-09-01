@@ -42,7 +42,10 @@
 <div class="modal-background" on:click={close}></div>
 
 <div class="modal" role="dialog" aria-modal="true" bind:this={modal}>
-	<slot name="header"></slot>
+	<header>
+		<slot name="header">Text</slot>
+	</header>
+
 	<slot></slot>
 
 	<!-- svelte-ignore a11y-autofocus -->
@@ -71,6 +74,11 @@
 		padding: 1em;
 		border-radius: 0.2em;
 		background: white;
+	}
+
+	header {
+		color: rgb(57, 66, 91);
+		text-align: center;
 	}
 
 	button {

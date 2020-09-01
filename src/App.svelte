@@ -4,7 +4,16 @@
 	import AddEditEmployee from "./components/AddEditEmployee.svelte";
 
 	import repositories from "./repository";
-    const employees = repositories.employees.getAll();
+	//const employees = repositories.employees.getAll();
+	let employees = [];
+
+	function refreshEmployeeList() {
+		repositories.employees.getAll().then((employeeList) => {
+			employees = employeeList;
+		});
+	}
+
+	refreshEmployeeList();
 
 	let showModal = false;
 	let selectedEmployee;	
@@ -12,9 +21,13 @@
 	console.log(employees);
 
 	function onEmployeeClicked(e) {
-		const employee = e.detail.employee;
-		showModal = true;
-		selectedEmployee = Object.assign({}, employee);
+		const employeeId = e.detail.employee.id;
+		console.log(employeeId);
+
+		repositories.employees.get(employeeId).then((employee) => {
+			selectedEmployee = employee;			
+			showModal = true;			
+		});			
 	}
 
 	function onModalClosed() {
@@ -23,7 +36,41 @@
 	}
 	
 	function onModalSubmitted() {
-		console.log(selectedEmployee);
+		const onComplete = () => {
+			refreshEmployeeList();
+			showModal = false;
+		};
+
+		if (!selectedEmployee.id) {
+			repositories.employees.add(selectedEmployee).then(onComplete);
+		} else {
+			repositories.employees.update(selectedEmployee.id, selectedEmployee).then(onComplete);
+		}
+
+	}
+
+	function onAddButtonPressed() {
+		selectedEmployee = {
+			address: "",
+			birthday: undefined,
+			email: "",
+			endDate: undefined,
+			firstName: "",
+			hasDrivingLicense: false,
+			id: undefined,
+			isActive: true,
+			ifFemale: true,
+			isManager: false,
+			lastName: "",
+			noChildren: 0,
+			postalCode: "",
+			salary: 0,
+			socialSecurityNumber: "",
+			startDate: undefined,
+			studies: "",
+			telephone: ""
+		};
+		showModal = true;
 	}
 </script>
 
@@ -43,7 +90,7 @@
 	</footer>
 </div>
 
-<ActionButton />
+<ActionButton on:click={onAddButtonPressed} />
 
 {#if showModal}
 <AddEditEmployee {selectedEmployee} on:close={onModalClosed} on:submit={onModalSubmitted} />

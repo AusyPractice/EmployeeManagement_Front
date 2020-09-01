@@ -14,4 +14,28 @@ export default class EmployeesRepository extends Repository {
         }
     }
 
+    getAll() {
+        return new Promise((resolve, reject) => {
+            super.getAll().then((employees) => {
+                let newEmployeesList = [];
+
+                for (let employee of employees) {
+                    newEmployeesList.push({
+                        id: employee.id,
+                        firstName: employee.firstName,
+                        lastName: employee.lastName,
+                        department: employee.department,
+                        position: employee.position,
+                        startDate: employee.startDate,
+                        endDate: employee.endDate,
+                        isActive: employee.isActive,
+                        isManager: employee.isManager
+                    });
+                }
+
+                resolve(newEmployeesList)
+            });
+        });
+    }
+
 }

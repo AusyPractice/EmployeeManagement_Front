@@ -5,7 +5,14 @@
 	export let selectedEmployee;
 	const dispatch = createEventDispatcher();
 
-    import { STUDIES } from "../utils/random-person";	
+	import { STUDIES } from "../utils/random-person";
+	
+	const isNewEntry = (selectedEmployee.id === undefined);
+
+	selectedEmployee.salary = formatDecimal(selectedEmployee.salary);
+	selectedEmployee.startDate = formatDateIso(selectedEmployee.startDate);
+	selectedEmployee.endDate = formatDateIso(selectedEmployee.endDate);
+	selectedEmployee.birthday = formatDateIso(selectedEmployee.birthday);
 
     function formatDateIso(date) {
 		if (date == null) {
@@ -20,132 +27,153 @@
 	}
 	
 	function onFormSubmitted() {
+		selectedEmployee.salary = parseFloat(selectedEmployee.salary);
+
+		selectedEmployee.birthday = new Date(selectedEmployee.birthday);
+		selectedEmployee.startDate = new Date(selectedEmployee.startDate);
+
+		if (selectedEmployee.endDate.length > 0) {
+			selectedEmployee.endDate = new Date(selectedEmployee.endDate);
+		} else {
+			selectedEmployee.endDate = null;
+		}
+
 		dispatch("submit");
 	}
 </script>
 
 <Modal on:close>
-	<form>
-		<div class="row">
-			<label>
-				First Name: 
-				<input type="text" placeholder="First Name" bind:value="{selectedEmployee.firstName}" required />
-			</label>
+	<div slot="header">
+		{#if isNewEntry}
+			Add a new employee
+		{:else}
+			Edit an existing employee
+		{/if}
+	</div>
 
-			<label>
-				Last Name:
-				<input type="text" placeholder="Last Name" bind:value="{selectedEmployee.lastName}" required />
-			</label>
-		</div>
+	<slot>
+		<form>
+			<div class="row">
+				<label>
+					First Name: 
+					<input type="text" placeholder="First Name" bind:value="{selectedEmployee.firstName}" required />
+				</label>
 
-		<div class="row">
-			<label>
-				Start Date:
-				<input type="date" value="{formatDateIso(selectedEmployee.startDate)}" required />
-			</label>
+				<label>
+					Last Name:
+					<input type="text" placeholder="Last Name" bind:value="{selectedEmployee.lastName}" required />
+				</label>
+			</div>
 
-			<label>
-				End Date:
-				<input type="date" value="{formatDateIso(selectedEmployee.endDate)}" />
-			</label>
-		</div>
+			<div class="row">
+				<label>
+					Start Date:
+					<input type="date" bind:value="{selectedEmployee.startDate}" required />
+				</label>
 
-		<div class="row">
-			<label>
-				Department:
-				<select>
-					<option value="1">ASD</option>
-				</select>
-			</label>
+				<label>
+					End Date:
+					<input type="date" bind:value="{selectedEmployee.endDate}" />
+				</label>
+			</div>
 
-			<label>
-				Job Category:
-				<select>
-					<option value="1">ASD</option>
-				</select>
-			</label>
-		</div>		
+			<div class="row">
+				<label>
+					Department:
+					<select>
+						<option value="1">ASD</option>
+					</select>
+				</label>
 
-		<div class="row">			
-			<label>
-				Telephone:
-				<input type="tel" value="{selectedEmployee.telephone}" required />
-			</label>
+				<label>
+					Job Category:
+					<select>
+						<option value="1">ASD</option>
+					</select>
+				</label>
+			</div>		
 
-			<label>
-				E-mail:
-				<input type="email" value="{selectedEmployee.email}" />
-			</label>
-		</div>
+			<div class="row">			
+				<label>
+					Telephone:
+					<input type="tel" bind:value="{selectedEmployee.telephone}" required />
+				</label>
 
-		<div class="row">
-			<label>
-				Birthday:
-				<input type="date" value="{formatDateIso(selectedEmployee.birthday)}" required />
-			</label>
+				<label>
+					E-mail:
+					<input type="email" bind:value="{selectedEmployee.email}" />
+				</label>
+			</div>
 
-			<label>
-				Num. children:
-				<input type="number" value="{selectedEmployee.noChildren}" required />
-			</label>			
-		</div>
+			<div class="row">
+				<label>
+					Birthday:
+					<input type="date" bind:value="{selectedEmployee.birthday}" required />
+				</label>
 
-		<div class="row">
-			<label>
-				Salary:
-				<input type="number" step="0.01" class="no-spinner" value="{formatDecimal(selectedEmployee.salary)}" required />
-			</label>
+				<label>
+					Num. children:
+					<input type="number" bind:value="{selectedEmployee.noChildren}" required />
+				</label>			
+			</div>
 
-			<label>
-				Social Security Number:
-				<input type="number" class="no-spinner" value="{selectedEmployee.socialSecurityNumber}" required />
-			</label>
-		</div>
+			<div class="row">
+				<label>
+					Salary:
+					<input type="number" step="0.01" class="no-spinner" bind:value="{selectedEmployee.salary}" required />
+				</label>
 
-		<div class="row">
-			<label>
-				Studies:
-				<input type="text" list="studies" value="{selectedEmployee.studies}" />
-			</label>
+				<label>
+					Social Security Number:
+					<input type="number" class="no-spinner" bind:value="{selectedEmployee.socialSecurityNumber}" required />
+				</label>
+			</div>
 
-			<label>
-				Postal Code:
-				<input type="number" class="no-spinner" value="{selectedEmployee.postalCode}" required />
-			</label>
+			<div class="row">
+				<label>
+					Studies:
+					<input type="text" list="studies" bind:value="{selectedEmployee.studies}" />
+				</label>
 
-			<datalist id="studies">
-				{#each STUDIES as study}
-					<option value="{study}" />
-				{/each}
-			</datalist>
-		</div>
+				<label>
+					Postal Code:
+					<input type="number" class="no-spinner" bind:value="{selectedEmployee.postalCode}" required />
+				</label>
 
-		<div class="row three-cols">
-			<label>
-				<input type="checkbox" checked="{selectedEmployee.isActive}" />
-				Active
-			</label>
+				<datalist id="studies">
+					{#each STUDIES as study}
+						<option value="{study}" />
+					{/each}
+				</datalist>
+			</div>
 
-			<label>
-				<input type="checkbox" checked="{selectedEmployee.isManager}" />
-				Manager
-			</label>
+			<div class="row three-cols">
+				<label>
+					<input type="checkbox" bind:checked="{selectedEmployee.isActive}" />
+					Active
+				</label>
 
-			<label>
-				<input type="checkbox" checked="{selectedEmployee.hasDrivingLicense}" />
-				Has driving license
-			</label>
-		</div>
+				<label>
+					<input type="checkbox" bind:checked="{selectedEmployee.isManager}" />
+					Manager
+				</label>
 
-		<div class="row">
-			<label class="full-row">
-				Address:
-				<textarea value="{selectedEmployee.address}" required></textarea>
-			</label>
-		</div>
+				<label>
+					<input type="checkbox" bind:checked="{selectedEmployee.hasDrivingLicense}" />
+					Has driving license
+				</label>
+			</div>
 
-		<input type="submit" on:click|preventDefault="{onFormSubmitted}" />
-	</form>
+			<div class="row">
+				<label class="full-row">
+					Address:
+					<textarea bind:value="{selectedEmployee.address}" required></textarea>
+				</label>
+			</div>
+
+			<input type="submit" on:click|preventDefault="{onFormSubmitted}" />
+		</form>
+	</slot>
 </Modal>
 
 <style>
