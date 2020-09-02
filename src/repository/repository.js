@@ -27,7 +27,8 @@ export default class Repository {
     get(id) {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                resolve(this._data[id]);
+                const entity = Object.assign({}, this._data[id]);
+                resolve(entity);
             }, 500);
         });   
     }
@@ -43,6 +44,15 @@ export default class Repository {
                 this._data[id] = entity;
                 console.log(this._data);
                 resolve(entity);
+            }, 500);
+        });
+    }
+
+    delete(id) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                delete this._data[id];
+                resolve();
             }, 500);
         });
     }

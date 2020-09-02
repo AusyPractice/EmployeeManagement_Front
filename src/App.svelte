@@ -4,16 +4,27 @@
 	import AddEditEmployee from "./components/AddEditEmployee.svelte";
 
 	import repositories from "./repository";
+	
 	//const employees = repositories.employees.getAll();
 	let employees = [];
+	let departments = [];
+	let jobCategories = [];
+
+	let employeeListPromise;
 
 	function refreshEmployeeList() {
-		repositories.employees.getAll().then((employeeList) => {
-			employees = employeeList;
-		});
+		employeeListPromise = repositories.employees.getAll();
 	}
 
 	refreshEmployeeList();
+
+	repositories.departments.getAll().then((departmentsList) => {
+		departments = departmentsList;
+	});
+
+	repositories.jobCategories.getAll().then((jobCategoriesList) => {
+		jobCategories = jobCategoriesList;
+	});
 
 	let showModal = false;
 	let selectedEmployee;	
@@ -49,6 +60,17 @@
 
 	}
 
+	function onEmployeeDelete() {		
+		if (!confirm("Are you sure to delete the selected employee?")) {
+			return;
+		}
+
+		repositories.employees.delete(selectedEmployee.id).then(() => {
+			refreshEmployeeList();
+			showModal = false;
+		});
+	}
+
 	function onAddButtonPressed() {
 		selectedEmployee = {
 			address: "",
@@ -82,7 +104,17 @@
 		</h1>
 	</header>	
 
-	<EmployeeList employees="{employees}" on:click="{onEmployeeClicked}" />
+	<div class="card">
+		{#await employeeListPromise}
+		<div class="loading">
+			Loading...
+		</div>
+		{:then employees}
+		<EmployeeList {employees} {departments} {jobCategories} on:click="{onEmployeeClicked}" />
+		{:catch}
+		Error while loading.
+		{/await}
+	</div>
 
 	<footer>
 		&copy; 2020 The Trainees at <a href="https://www.ausy.com/en/the-group/locations/romania" target="_blank">Ausy Technologies Romania</a>.<br />
@@ -93,7 +125,7 @@
 <ActionButton on:click={onAddButtonPressed} />
 
 {#if showModal}
-<AddEditEmployee {selectedEmployee} on:close={onModalClosed} on:submit={onModalSubmitted} />
+<AddEditEmployee {selectedEmployee} {departments} {jobCategories} on:close={onModalClosed} on:submit={onModalSubmitted} on:delete={onEmployeeDelete} />
 {/if}
 
 <style>
@@ -127,4 +159,22 @@
 	footer a {
 		color: rgb(205, 207, 214);
 	}	
+
+	.card {
+		background-color: white;
+		box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
+		border-radius: 5px;
+	}
+
+	.card .loading {
+		padding: 4em;
+		text-align: center;
+		background: repeating-linear-gradient(
+			45deg,
+			transparent 0px,
+			transparent 15px,
+			rgba(0, 0, 0, 0.1) 15px,
+			rgba(0, 0, 0, 0.1) 30px
+		);
+	}
 </style>

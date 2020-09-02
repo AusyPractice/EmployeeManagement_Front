@@ -2,7 +2,35 @@
     import { createEventDispatcher } from "svelte";
     const dispatch = createEventDispatcher();
 
-    export let employees;
+	export let employees;
+	export let departments;
+	export let jobCategories;
+	let departmentsMap = {};
+	let jobCategoriesMap = {};
+
+	$: {
+		departmentsMap = entityArrayToMap(departments);
+		jobCategoriesMap = entityArrayToMap(jobCategories);
+	}
+
+	function getDepartmentName(id) {
+		return (departmentsMap[id] !== undefined ? departmentsMap[id].name : "-");
+	}
+
+	function getJobCategoryName(id) {
+		return (jobCategoriesMap[id] !== undefined ? jobCategoriesMap[id].name : "-");
+	}
+
+	function entityArrayToMap(entityList) {
+		const result = {};
+
+		console.log(entityList);
+		for (const entity of entityList) {
+			result[entity.id] = entity;
+		}
+
+		return result;
+	}
     
     function formatDate(date) {		
 		if (date === null) {
@@ -49,8 +77,8 @@
                 <tr on:click="{() => onEmployeeClicked(employee)}">
                     <td>{employee.firstName}</td>
                     <td>{employee.lastName}</td>
-                    <td>&ndash;</td>
-                    <td>&ndash;</td>
+                    <td>{getDepartmentName(employee.departmentId)}</td>
+                    <td>{getJobCategoryName(employee.positionId)}</td>
                     <td>{formatDate(employee.startDate)}</td>
                     <td>{formatDate(employee.endDate)}</td>
                     
@@ -64,11 +92,8 @@
 
 <style>
     .employees-list table {
-		background-color: white;
 		width: 100%;
 		border-collapse: collapse;
-		border-radius: 5px;
-		box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
 	}
 
 	.employees-list table th,

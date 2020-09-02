@@ -34,7 +34,9 @@ function generateRandomPerson() {
         salary: random.getRandomDecimal(2400, 12000),
         studies: random.getRandomFromArray(STUDIES),
         socialSecurityNumber: getSocialSecurityNumber(isFemale),
-        hasDrivingLicense: random.getRandomBoolean()
+        hasDrivingLicense: random.getRandomBoolean(),
+        departmentId: random.getRandomNumber(1, 3),
+        positionId: random.getRandomNumber(1, 4)
     };
 }
 

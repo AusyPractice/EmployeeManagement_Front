@@ -3,6 +3,9 @@
 	import Modal from "../Modal.svelte";
 
 	export let selectedEmployee;
+	export let departments;
+	export let jobCategories;
+
 	const dispatch = createEventDispatcher();
 
 	import { STUDIES } from "../utils/random-person";
@@ -39,6 +42,10 @@
 		}
 
 		dispatch("submit");
+	}
+
+	function onDeletePressed() {
+		dispatch("delete");
 	}
 </script>
 
@@ -81,14 +88,18 @@
 				<label>
 					Department:
 					<select>
-						<option value="1">ASD</option>
+						{#each departments as department}
+						<option value="{department.id}">{department.name}</option>
+						{/each}
 					</select>
 				</label>
 
 				<label>
 					Job Category:
 					<select>
-						<option value="1">ASD</option>
+						{#each jobCategories as jobCategory}
+						<option value="{jobCategory.id}">{jobCategory.name}</option>
+						{/each}
 					</select>
 				</label>
 			</div>		
@@ -172,6 +183,7 @@
 			</div>
 
 			<input type="submit" on:click|preventDefault="{onFormSubmitted}" />
+			<input type="button" on:click="{onDeletePressed}" value="Delete" />
 		</form>
 	</slot>
 </Modal>
