@@ -9,33 +9,43 @@
 	let employees = [];
 	let departments = [];
 	let jobCategories = [];
-
-	let employeeListPromise;
+	let loadDataPromise;
 
 	function refreshEmployeeList() {
-		employeeListPromise = repositories.employees.getAll();
+		loadDataPromise = new Promise((resolve, reject) => {
+			const employeePromise = repositories.employees.getAll()
+				.then((employeesResult) => {
+					employees = employeesResult;
+				});
+
+			const departmentsPromise = repositories.departments.getAll()
+				.then((departmentsResult) => {
+					departments = departmentsResult;
+				});
+
+			const jobCategoriesPromise = repositories.jobCategories.getAll()
+				.then((jobCategoriesResult) => {
+					jobCategories = jobCategoriesResult;
+				})
+
+			Promise.all([ employeePromise, departmentsPromise, jobCategoriesPromise ]).then(() => {
+				resolve();
+			}).catch(() => {
+				reject();
+			});
+		});
 	}
-
+	
 	refreshEmployeeList();
-
-	repositories.departments.getAll().then((departmentsList) => {
-		departments = departmentsList;
-	});
-
-	repositories.jobCategories.getAll().then((jobCategoriesList) => {
-		jobCategories = jobCategoriesList;
-	});
 
 	let showModal = false;
 	let selectedEmployee;	
 
-	console.log(employees);
-
 	function onEmployeeClicked(e) {
 		const employeeId = e.detail.employee.id;
-		console.log(employeeId);
 
 		repositories.employees.get(employeeId).then((employee) => {
+			console.log(employee);
 			selectedEmployee = employee;			
 			showModal = true;			
 		});			
@@ -116,12 +126,12 @@
 	</header>	
 
 	<div class="card">
-		{#await employeeListPromise}
+		{#await loadDataPromise}
 		<div class="loading">
 			Loading...
 		</div>
-		{:then employees}
-		<EmployeeList {employees} {departments} {jobCategories} on:click="{onEmployeeClicked}" />
+		{:then}
+		<EmployeeList employees={employees} {departments} {jobCategories} on:click="{onEmployeeClicked}" />
 		{:catch}
 		Error while loading.
 		{/await}

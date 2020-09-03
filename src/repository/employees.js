@@ -1,41 +1,17 @@
-import Repository from "./repository";
-import generateRandomPerson from "../utils/random-person";
-import random from "../utils/random-utils";
+import { get, put } from "../utils/server";
 
-export default class EmployeesRepository extends Repository {
-
-    constructor() {
-        super();
-
-        const numEmployees = random.getRandomNumber(1, 10);
-        for (let i=0; i < numEmployees; i++) {
-            const aRandomPerson = generateRandomPerson();
-            this.add(aRandomPerson);
-        }
-    }
+export default class EmployeesRepository {
 
     getAll() {
-        return new Promise((resolve, reject) => {
-            super.getAll().then((employees) => {
-                let newEmployeesList = [];
+        return get("/employees/getAllEmployeesDTO");
+    }
 
-                for (let employee of employees) {
-                    newEmployeesList.push({
-                        id: employee.id,
-                        firstName: employee.firstName,
-                        lastName: employee.lastName,
-                        departmentId: employee.departmentId,
-                        positionId: employee.positionId,
-                        startDate: employee.startDate,
-                        endDate: employee.endDate,
-                        isActive: employee.isActive,
-                        isManager: employee.isManager
-                    });
-                }
+    get(id) {
+        return get("/employees/getEmployee/" + id);
+    }
 
-                resolve(newEmployeesList)
-            });
-        });
+    update(id, entity) {
+        return put(`/employees/updateEmployee/${id}/${entity.department.id}/${entity.jobCategory.id}`, entity);
     }
 
 }

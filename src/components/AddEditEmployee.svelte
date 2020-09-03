@@ -24,6 +24,10 @@
 			return "";
 		}
 
+		if (typeof(date) !== Date) {
+			date = new Date(date);
+		}
+
 		return date.toISOString().substr(0, 10);
     }
     
@@ -140,7 +144,7 @@
 
 				<label>
 					Postal Code:
-					<input type="number" class="no-spinner" bind:value="{selectedEmployee.postalCode}" required />
+					<input type="number" class="no-spinner" bind:value="{selectedEmployee.cp}" required />
 				</label>
 
 				<datalist id="studies">

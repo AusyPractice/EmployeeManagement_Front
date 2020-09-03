@@ -24,7 +24,6 @@
 	function entityArrayToMap(entityList) {
 		const result = {};
 
-		console.log(entityList);
 		for (const entity of entityList) {
 			result[entity.id] = entity;
 		}
@@ -35,6 +34,10 @@
     function formatDate(date) {		
 		if (date === null) {
 			return "–";
+		}
+
+		if (typeof(date) !== Date) {
+			date = new Date(date);
 		}
 
 		return date.toLocaleDateString();
@@ -75,15 +78,15 @@
         <tbody>
             {#each employees as employee}
                 <tr on:click="{() => onEmployeeClicked(employee)}">
-                    <td>{employee.firstName}</td>
-                    <td>{employee.lastName}</td>
-                    <td>{getDepartmentName(employee.departmentId)}</td>
-                    <td>{getJobCategoryName(employee.positionId)}</td>
+                    <td>{employee.firstname}</td>
+                    <td>{employee.lastname}</td>
+                    <td>{getDepartmentName(employee.department)}</td>
+                    <td>{getJobCategoryName(employee.jobCategory)}</td>
                     <td>{formatDate(employee.startDate)}</td>
                     <td>{formatDate(employee.endDate)}</td>
                     
-                    <td class="centered boolean-value" class:yes="{employee.isManager}">{formatBoolean(employee.isManager)}</td>
-                    <td class="centered boolean-value" class:yes="{employee.isActive}">{formatBoolean(employee.isActive)}</td>
+                    <td class="centered boolean-value" class:yes="{employee.manager}">{formatBoolean(employee.manager)}</td>
+                    <td class="centered boolean-value" class:yes="{employee.active}">{formatBoolean(employee.active)}</td>
                 </tr>
             {/each}
         </tbody>

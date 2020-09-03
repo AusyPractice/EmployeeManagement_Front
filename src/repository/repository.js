@@ -42,7 +42,6 @@ export default class Repository {
                 }
 
                 this._data[id] = entity;
-                console.log(this._data);
                 resolve(entity);
             }, 500);
         });

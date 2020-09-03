@@ -1,17 +1,9 @@
-import Repository from "./repository";
+import { get } from "../utils/server";
 
-export default class DepartmentsRepository extends Repository {
+export default class DepartmentsRepository {
 
-    constructor() {
-        super();
-
-        this.add({
-            name: "Human Resources"
-        });
-
-        this.add({
-            name: "Upper Management"
-        });
+    getAll() {
+        return get("/departments/getAllDepartments/");
     }
 
 }
