@@ -14,6 +14,8 @@
 
 	selectedEmployee.salary = formatDecimal(selectedEmployee.salary);
 	selectedEmployee.startDate = formatDateIso(selectedEmployee.startDate);
+	console.log(selectedEmployee.startDate);
+
 	selectedEmployee.endDate = formatDateIso(selectedEmployee.endDate);
 	selectedEmployee.birthday = formatDateIso(selectedEmployee.birthday);
 
@@ -31,16 +33,6 @@
 	
 	function onFormSubmitted() {
 		selectedEmployee.salary = parseFloat(selectedEmployee.salary);
-
-		selectedEmployee.birthday = new Date(selectedEmployee.birthday);
-		selectedEmployee.startDate = new Date(selectedEmployee.startDate);
-
-		if (selectedEmployee.endDate.length > 0) {
-			selectedEmployee.endDate = new Date(selectedEmployee.endDate);
-		} else {
-			selectedEmployee.endDate = null;
-		}
-
 		dispatch("submit");
 	}
 

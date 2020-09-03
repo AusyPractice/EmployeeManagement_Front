@@ -52,10 +52,21 @@
 			showModal = false;
 		};
 
-		if (!selectedEmployee.id) {
-			repositories.employees.add(selectedEmployee).then(onComplete);
+		const employee = Object.assign({}, selectedEmployee);
+
+		employee.birthday = new Date(employee.birthday);
+		employee.startDate = new Date(employee.startDate);
+
+		if (employee.endDate.length > 0) {
+			employee.endDate = new Date(employee.endDate);
 		} else {
-			repositories.employees.update(selectedEmployee.id, selectedEmployee).then(onComplete);
+			employee.endDate = null;
+		}
+
+		if (!employee.id) {
+			repositories.employees.add(employee).then(onComplete);
+		} else {
+			repositories.employees.update(employee.id, employee).then(onComplete);
 		}
 
 	}
